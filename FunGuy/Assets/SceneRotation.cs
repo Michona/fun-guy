@@ -5,20 +5,21 @@ using UnityEngine;
 
 public class SceneRotation : MonoBehaviour
 {
-    Vector3 CurrentRotation = new(0, 0, 0);
-    float RotationDeltaDeg = -90;
-    float RotationSpeed = .01f;
 
     private void Start()
     {
+        RotationState.Instance.Rotation = transform.rotation;
         InvokeRepeating(nameof(Rotate), 5, 5);
     }
 
-    private void Rotate() => CurrentRotation.z += RotationDeltaDeg;
+    private void Rotate() => RotationState.Instance.Rotate();
 
     private void Update()
     {
-        var rotGoal = Quaternion.Euler(CurrentRotation);
-        transform.rotation = Quaternion.Lerp(transform.rotation, rotGoal, RotationSpeed);
+        if (Input.GetKeyDown(KeyCode.R))
+            Rotate();
+        
+        RotationState.Instance.Update();
+        transform.rotation = RotationState.Instance.Rotation;
     }
 }
