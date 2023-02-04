@@ -7,40 +7,57 @@ namespace Roots
     public class FungiRootInput : MonoBehaviour
     {
         [SerializeField] private string PID;
+        
+        private Vector2 aimDirection = Vector2.up;
+        private bool isSproutPressed = false;
 
         // Start is called before the first frame update
-        void Start()
+        private void Start()
         {
-            InvokeRepeating(nameof(CheckDirection), 0f, 1f);
+            InvokeRepeating(nameof(CheckDirection), 0f, 0.5f);
+        }
+
+        public void onAim(InputAction.CallbackContext context)
+        {
+            aimDirection = context.ReadValue<Vector2>();
+        }
+        
+        public void onSprout(InputAction.CallbackContext context)
+        {
+            var triggered = context.action.triggered;
+            if (triggered && !isSproutPressed)
+            {
+                /* initial click */
+                var currentPosition = transform.position;
+                EventBus<StartRootingEvent>.Raise(new StartRootingEvent
+                {
+                    PID = PID,
+                    Position = new Vector2(currentPosition.x, currentPosition.y)
+                }); 
+            }
+            else if (!triggered && isSproutPressed) 
+            {
+                /* triggering was released. */
+                EventBus<StopRootingEvent>.Raise(new StopRootingEvent
+                {
+                    PID = PID,
+                }); 
+            }
+
+            isSproutPressed = triggered;
+            Debug.Log("SPROUT" + triggered);
         }
 
         private void CheckDirection()
         {
-            var gamepad = Gamepad.current;
-            if (gamepad == null)
+            if (isSproutPressed)
             {
-                Debug.Log("NO GAMEPAD");
-                return;
-            }
-
-            if (gamepad.yButton.isPressed)
-            {
-                EventBus<StartRootingEvent>.Raise(new StartRootingEvent
-                {
-                    PID = PID,
-                    Position = new Vector2(0f, 0f)
-                });
-            }
-
-            if (gamepad.xButton.isPressed)
-            {
-                var direction = gamepad.leftStick.ReadValue();
-                var rootUnit = RootsController.INSTANCE.Connect(PID, direction);
-
+                var rootUnit = RootsController.INSTANCE.Connect(PID, aimDirection);
                 if (rootUnit != null)
                 {
                     EventBus<SpawnRootEvent>.Raise(new SpawnRootEvent
                     {
+                        PID = PID,
                         Unit = rootUnit
                     });
                 }

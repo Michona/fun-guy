@@ -17,6 +17,7 @@ namespace Event
 
     public struct SpawnRootEvent : IEvent
     {
+        public string PID;
         public RootUnit Unit;
     }
 }

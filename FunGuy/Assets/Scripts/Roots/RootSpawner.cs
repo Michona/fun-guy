@@ -6,7 +6,9 @@ namespace Roots
 {
     public class RootSpawner : MonoBehaviour, IEventReceiver<SpawnRootEvent>
     {
-        [SerializeField] private GameObject RootUnit;
+        [SerializeField] private GameObject PlayerOneRoot;
+
+        [SerializeField] private GameObject PlayerTwoRoot;
 
         private List<GameObject> roots = new();
 
@@ -24,8 +26,13 @@ namespace Roots
         public void OnEvent(SpawnRootEvent e)
         {
             var rootUnit = e.Unit;
-            var rootObject = Instantiate(RootUnit, new Vector3(rootUnit.Position.x, rootUnit.Position.y, 0f),
+
+            var rootToSpawn = e.PID == "0" ? PlayerOneRoot : PlayerTwoRoot;
+
+            var rootObject = Instantiate(rootToSpawn, new Vector3(rootUnit.Position.x, rootUnit.Position.y, 0f),
                 rootUnit.Rotation);
+            rootObject.GetComponent<RootMono>().data = e.Unit;
+
             roots.Add(rootObject);
         }
     }
