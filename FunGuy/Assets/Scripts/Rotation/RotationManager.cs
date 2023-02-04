@@ -1,9 +1,11 @@
 using System;
+using Event;
+using Injection;
 using UnityEngine;
 
 namespace Rotation
 {
-    public class RotationState
+    public class RotationManager : IGameSingleton
     {
         public Vector3 CurrentRotation = new(0, 0, 0);
 
@@ -26,20 +28,39 @@ namespace Rotation
             }
         }
 
-        private RotationState()
+        private RotationManager()
         {
-            _rotation = Quaternion.Euler(0, 0, 0);
         }
 
-        private static readonly Lazy<RotationState> InstanceLazy = new(() => new RotationState());
-        public static RotationState Instance => InstanceLazy.Value;
+        private static readonly Lazy<RotationManager> _instance = new(() => new RotationManager());
+        public static RotationManager INSTANCE => _instance.Value;
 
-        public void Rotate() => CurrentRotation.z += RotationDeltaDeg;
+        public void Rotate()
+        {
+            CurrentRotation.z += RotationDeltaDeg;
+            EventBus<StopRootingEvent>.Raise(new StopRootingEvent
+            {
+                PID = "0",
+            });
+            EventBus<StopRootingEvent>.Raise(new StopRootingEvent
+            {
+                PID = "1",
+            });
+        }
 
         public void Update()
         {
             var rotGoal = Quaternion.Euler(CurrentRotation);
             _rotation = Quaternion.Lerp(_rotation, rotGoal, RotationSpeed);
+        }
+
+        public void Init()
+        {
+            _rotation = Quaternion.Euler(0, 0, 0);
+        }
+
+        public void Destroy()
+        {
         }
     }
 }
