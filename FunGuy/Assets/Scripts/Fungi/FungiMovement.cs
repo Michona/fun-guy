@@ -37,9 +37,12 @@ namespace Fungi
 
         public void OnMove(InputAction.CallbackContext context)
         {
-            _direction = GameManager.INSTANCE.Players[PID].State == FungiState.Walking
-                ? context.ReadValue<Vector2>()
-                : Vector2.zero;
+            if (GameManager.INSTANCE.Players.ContainsKey(PID))
+            {
+                _direction = GameManager.INSTANCE.Players[PID].State == FungiState.Walking
+                    ? context.ReadValue<Vector2>()
+                    : Vector2.zero;
+            }
         }
 
         // Update is called once per frame

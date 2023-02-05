@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Event;
 using Game.Data;
 using Injection;
+using UnityEngine.SceneManagement;
 using Util;
 
 namespace Game
@@ -21,9 +22,8 @@ namespace Game
 
         public void Init()
         {
-            Players.Add(GlobalConst.PlayerOne, new FungiData());
-            Players.Add(GlobalConst.PlayerTwo, new FungiData());
-
+            Players.TryAdd(GlobalConst.PlayerOne, new FungiData());
+            Players.TryAdd(GlobalConst.PlayerTwo, new FungiData());
             EventBus<StartRootingEvent>.Register(this);
             EventBus<StopRootingEvent>.Register(this);
             EventBus<TakeDamageEvent>.Register(this);
@@ -31,6 +31,8 @@ namespace Game
 
         public void Destroy()
         {
+            Players.Remove(GlobalConst.PlayerOne);
+            Players.Remove(GlobalConst.PlayerTwo);
             EventBus<StartRootingEvent>.UnRegister(this);
             EventBus<StopRootingEvent>.UnRegister(this);
             EventBus<TakeDamageEvent>.UnRegister(this);
@@ -56,11 +58,19 @@ namespace Game
             var fungi = Players[e.PID];
             if (DateTime.Now.Second - fungi.LastDamageTimeStamp >= GlobalConst.InvulnerabilityTime)
             {
-                Players[e.PID] = fungi with
+                if (fungi.Health <= 1)
                 {
-                    Health = fungi.Health - 1,
-                    LastDamageTimeStamp = DateTime.Now.Second
-                };
+                    // GAME OVER!
+                    SceneManager.LoadSceneAsync(0);
+                }
+                else
+                {
+                    Players[e.PID] = fungi with
+                    {
+                        Health = fungi.Health - 1,
+                        LastDamageTimeStamp = DateTime.Now.Second
+                    };
+                }
             }
         }
     }

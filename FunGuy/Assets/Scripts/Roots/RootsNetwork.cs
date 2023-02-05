@@ -29,14 +29,15 @@ namespace Roots
 
         public void Init()
         {
-            _pivot.Add(GlobalConst.PlayerOne, null);
-            _pivot.Add(GlobalConst.PlayerTwo, null);
-
+            _pivot.TryAdd(GlobalConst.PlayerOne, null);
+            _pivot.TryAdd(GlobalConst.PlayerTwo, null);
             EventBus<StartRootingEvent>.Register(this);
         }
 
         public void Destroy()
         {
+            _pivot.Remove(GlobalConst.PlayerOne);
+            _pivot.Remove(GlobalConst.PlayerTwo);
             EventBus<StartRootingEvent>.UnRegister(this);
         }
 

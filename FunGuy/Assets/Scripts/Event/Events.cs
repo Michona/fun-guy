@@ -30,4 +30,8 @@ namespace Event
     {
         public string PID;
     }
+
+    public struct GameOver : IEvent
+    {
+    }
 }
