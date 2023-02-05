@@ -32,6 +32,7 @@ namespace Roots
             var rootObject = Instantiate(rootToSpawn, new Vector3(rootUnit.Position.x, rootUnit.Position.y, 0f),
                 rootUnit.Rotation);
             rootObject.GetComponent<RootMono>().data = e.Unit;
+            rootObject.transform.parent = transform;
 
             roots.Add(rootObject);
         }
