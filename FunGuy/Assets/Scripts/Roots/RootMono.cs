@@ -1,3 +1,4 @@
+using System.Collections;
 using Event;
 using Fungi;
 using Game;
@@ -5,6 +6,7 @@ using JetBrains.Annotations;
 using Roots.Data;
 using Unity.VisualScripting;
 using UnityEngine;
+using Util;
 
 namespace Roots
 {
@@ -14,6 +16,17 @@ namespace Roots
 
         [SerializeField] private GameObject SpotObject;
         [CanBeNull] private GameObject _spotInstance;
+
+        private void Start()
+        {
+            StartCoroutine(StartExpirationClock());
+        }
+
+        IEnumerator StartExpirationClock()
+        {
+            yield return new WaitForSeconds(GlobalConst.RootExpiration);
+            Destroy(this.gameObject);
+        }
 
         private void OnTriggerEnter2D(Collider2D col)
         {

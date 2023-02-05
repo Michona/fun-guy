@@ -1,4 +1,5 @@
 using UnityEngine;
+using Util;
 
 namespace Rotation
 {
@@ -7,7 +8,7 @@ namespace Rotation
         private void Start()
         {
             RotationManager.INSTANCE.Rotation = transform.rotation;
-            // InvokeRepeating(nameof(Rotate), 5, 5);
+            InvokeRepeating(nameof(Rotate), GlobalConst.RotationInterval, GlobalConst.RotationInterval);
         }
 
         private void Rotate() => RotationManager.INSTANCE.Rotate();
