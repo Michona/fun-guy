@@ -11,18 +11,22 @@ namespace Fungi
         [SerializeField] private LayerMask jumpableGround;
 
         private Rigidbody2D _rb;
-        private Collider2D _coll;
+        private Collider2D _collFeet;
         private Vector2 _direction = Vector2.up;
         private float _gravityScale;
 
+        private Animator _animator;
+
         private string PID;
+        private static readonly int FungiAnimState = Animator.StringToHash("FungiAnimState");
 
         // Start is called before the first frame update
         private void Start()
         {
             _rb = GetComponent<Rigidbody2D>();
-            _coll = GetComponent<Collider2D>();
+            _collFeet = GetComponent<Collider2D>();
             _gravityScale = _rb.gravityScale;
+            _animator = GetComponent<Animator>();
 
             PID = GetComponent<FungiRootsMovement>().PID;
         }
@@ -64,11 +68,21 @@ namespace Fungi
                 _rb.velocity = new Vector2(_direction.x * 7f, _rb.velocity.y);
                 _rb.gravityScale = _gravityScale;
             }
+
+            /* update animation */
+            var state = GameManager.INSTANCE.Players[PID].State;
+            if (state == FungiState.Walking)
+            {
+                if (_rb.velocity == Vector2.zero) state = FungiState.Idle;
+                if (!GameManager.INSTANCE.Players[PID].IsOnGround) state = FungiState.Jumping;
+            }
+
+            _animator.SetInteger(FungiAnimState, (int)state);
         }
 
         private void UpdateGroundState()
         {
-            var bounds = _coll.bounds;
+            var bounds = _collFeet.bounds;
             var isOnGround = Physics2D.BoxCast(bounds.center, bounds.size, 0f, Vector2.down, .1f, jumpableGround);
 
             GameManager.INSTANCE.Players[PID] = GameManager.INSTANCE.Players[PID] with

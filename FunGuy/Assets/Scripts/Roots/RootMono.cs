@@ -56,7 +56,7 @@ namespace Roots
             }
 
             /* We hit a Fungi player. */
-            if (col.CompareTag("Player"))
+            if (col.CompareTag("Player") && col.friction == 0)
             {
                 _spotInstance = Instantiate(SpotObject, transform);
 
@@ -108,7 +108,7 @@ namespace Roots
 
         private void OnTriggerExit2D(Collider2D col)
         {
-            if (col.CompareTag("Player"))
+            if (col.CompareTag("Player") && col.friction == 0)
             {
                 var fungiPid = col.GetComponent<FungiRootsMovement>().PID;
                 GameManager.INSTANCE.Players[fungiPid] = GameManager.INSTANCE.Players[fungiPid] with

@@ -40,7 +40,7 @@
                     "path": "<DualShockGamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
-                    "groups": "GamepadOne",
+                    "groups": "GamepadOne;GamepadTwo",
                     "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -73,7 +73,7 @@
                     "path": "<DualShockGamepad>/leftStick",
                     "interactions": "",
                     "processors": "",
-                    "groups": "GamepadOne",
+                    "groups": "GamepadOne;GamepadTwo",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -194,7 +194,7 @@
                     "path": "<DualShockGamepad>/buttonEast",
                     "interactions": "",
                     "processors": "",
-                    "groups": "GamepadOne",
+                    "groups": "GamepadOne;GamepadTwo",
                     "action": "Sprout",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -275,6 +275,17 @@
             "devices": [
                 {
                     "devicePath": "<Mouse>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        },
+        {
+            "name": "GamepadTwo",
+            "bindingGroup": "GamepadTwo",
+            "devices": [
+                {
+                    "devicePath": "<DualShockGamepad>",
                     "isOptional": false,
                     "isOR": false
                 }

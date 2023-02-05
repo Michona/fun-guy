@@ -7,7 +7,7 @@ namespace Util
 
         /* Game */
         public const int MaxHealth = 10;
-        public const int InvulnerabilityTime = 2; // seconds
+        public const int InvulnerabilityTime = 2 * 1000; // seconds
 
         /* Roots */
         public const int TurnRateAngle = 60; // degrees

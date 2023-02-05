@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Event;
 using Game.Data;
 using Injection;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using Util;
 
@@ -56,9 +57,9 @@ namespace Game
         public void OnEvent(TakeDamageEvent e)
         {
             var fungi = Players[e.PID];
-            var timeNow = DateTime.Now.Second;
+            var timeNow = Time.realtimeSinceStartup;
 
-            if (timeNow - fungi.LastDamageTimeStamp >= GlobalConst.InvulnerabilityTime)
+            if (timeNow - fungi.LastDamageTimeStamp >= 2f)
             {
                 if (fungi.Health <= 1)
                 {

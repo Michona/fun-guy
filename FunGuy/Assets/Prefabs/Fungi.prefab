@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 7067831069980652383}
   - component: {fileID: 7067831069980652382}
   - component: {fileID: 7067831069980652381}
+  - component: {fileID: -1684098024748260902}
+  - component: {fileID: -5723736419897604620}
   m_Layer: 0
   m_Name: Fungi
   m_TagString: Player
@@ -138,7 +140,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.010733008, y: -0.06613928}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -149,7 +151,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.38362002, y: 0.8370558}
   m_EdgeRadius: 0
 --- !u!114 &7067831069980652382
 MonoBehaviour:
@@ -254,3 +256,39 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PID: 0
+--- !u!70 &-1684098024748260902
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7067831069980652389}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: ab67f227860414a4cace686cadbabad2, type: 2}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.024532557, y: 0.032198966}
+  m_Size: {x: 0.76027536, y: 0.95960224}
+  m_Direction: 0
+--- !u!95 &-5723736419897604620
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7067831069980652389}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e892fd6027fd54f93a7b2d9a9713a261, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
