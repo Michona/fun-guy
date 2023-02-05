@@ -468,7 +468,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bb646c173814b988481d737d4f31710, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerOneRoot: {fileID: 7493479127198194776, guid: 27ad9058074ea4963b8bcdeb4b1b217f, type: 3}
+  PlayerOneRoots:
+  - {fileID: 7493479127198194776, guid: 27ad9058074ea4963b8bcdeb4b1b217f, type: 3}
+  - {fileID: 8525666426408646193, guid: 7064a1df82cb842268608c5518ad9f50, type: 3}
+  PlayerOneBaseRoot: {fileID: 6507697926865790182, guid: e12641909cd564f7c9e8f0d86f7d0bed, type: 3}
   PlayerTwoRoot: {fileID: 3648245990768062727, guid: e4a832160867c4a3ebef0dcdd7bb4982, type: 3}
 --- !u!1 &675304986
 GameObject:

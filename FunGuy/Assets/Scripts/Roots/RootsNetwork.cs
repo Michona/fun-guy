@@ -23,7 +23,7 @@ namespace Roots
 
         /* how further away does the root spawn. */
         private const float DistanceMultiplier = 0.7f;
-            
+
         private RootsNetwork()
         {
         }
@@ -59,17 +59,18 @@ namespace Roots
 
             var updatedDirection = GetUpdatedDirection(pivot.Direction, direction);
             var position = pivot.Position + (updatedDirection * DistanceMultiplier);
-            var angle = GetRotationAngle( pivot.Position, position);
+            var angle = GetRotationAngle(pivot.Position, position);
 
             var unit = new RootUnit(
                 Vector3.Lerp(position, pivot.Position, 0.5f),
                 Quaternion.Euler(0, 0, angle),
                 pid,
-                pivot.ID
+                pivot.ID,
+                pivot.isBase
             );
 
             /* update pivot */
-            _pivot[pid] = new Joint(position, pivot.ID, updatedDirection);
+            _pivot[pid] = new Joint(position, pivot.ID, updatedDirection, false);
 
             /* we can spawn now. */
             EventBus<SpawnRootEvent>.Raise(new SpawnRootEvent
@@ -78,8 +79,10 @@ namespace Roots
                 Unit = unit
             });
         }
-        private static Vector2 DegreeToVector2(Vector2 from, float degree) => (Vector2)(Quaternion.Euler(0,0,degree) * from);
-        
+
+        private static Vector2 DegreeToVector2(Vector2 from, float degree) =>
+            (Vector2)(Quaternion.Euler(0, 0, degree) * from);
+
         private static float GetRotationAngle(Vector2 initialPosition, Vector2 targetPosition)
         {
             var rot = Vector3.Angle(Vector2.up, targetPosition - initialPosition);
@@ -111,7 +114,7 @@ namespace Roots
         {
             var pivot = _pivot[e.PID];
             var originID = pivot?.ID ?? 0;
-            _pivot[e.PID] = new Joint(e.Position, originID + 1, Vector2.up);
+            _pivot[e.PID] = new Joint(e.Position, originID + 1, Vector2.up, true);
         }
     }
 }

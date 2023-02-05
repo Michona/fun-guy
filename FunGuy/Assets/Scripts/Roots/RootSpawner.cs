@@ -2,14 +2,17 @@ using System.Collections.Generic;
 using Event;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = System.Random;
 
 namespace Roots
 {
     public class RootSpawner : MonoBehaviour, IEventReceiver<SpawnRootEvent>, IEventReceiver<DestroyRootEvent>
     {
-        [SerializeField] private GameObject PlayerOneRoot;
+        [SerializeField] private List<GameObject> PlayerOneRoots;
+        [SerializeField] private GameObject PlayerOneBaseRoot;
 
-        [SerializeField] private GameObject PlayerTwoRoot;
+        [SerializeField] private List<GameObject> PlayerTwoRoots;
+        [SerializeField] private GameObject PlayerTwoBaseRoot;
 
         private readonly List<GameObject> _roots = new();
 
@@ -30,7 +33,10 @@ namespace Roots
         {
             var rootUnit = e.Unit;
 
-            var rootToSpawn = e.PID == "0" ? PlayerOneRoot : PlayerTwoRoot;
+            var randomRootIndex = (new Random()).Next(0, PlayerOneRoots.Count);
+            var rootToSpawn = e.PID == "0"
+                ? (rootUnit.isBase ? PlayerOneBaseRoot : PlayerOneRoots[randomRootIndex])
+                : (rootUnit.isBase ? PlayerTwoBaseRoot : PlayerOneRoots[randomRootIndex]);
 
             var rootObject = Instantiate(rootToSpawn, new Vector3(rootUnit.Position.x, rootUnit.Position.y, 0f),
                 rootUnit.Rotation);
