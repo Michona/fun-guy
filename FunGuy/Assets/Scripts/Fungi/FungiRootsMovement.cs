@@ -1,4 +1,5 @@
 using Event;
+using Game;
 using Roots;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -26,7 +27,7 @@ namespace Fungi
         public void onSprout(InputAction.CallbackContext context)
         {
             var triggered = context.action.triggered;
-            if (triggered && !_isSproutPressed)
+            if (triggered && !_isSproutPressed && GameManager.INSTANCE.Players[PID].CanRoot)
             {
                 /* initial click */
                 var currentPosition = transform.position;
@@ -50,17 +51,9 @@ namespace Fungi
 
         private void CheckDirection()
         {
-            if (_isSproutPressed)
+            if (_isSproutPressed && GameManager.INSTANCE.Players[PID].CanRoot)
             {
-                var rootUnit = RootsNetwork.INSTANCE.Connect(PID, _aimDirection);
-                if (rootUnit != null)
-                {
-                    EventBus<SpawnRootEvent>.Raise(new SpawnRootEvent
-                    {
-                        PID = PID,
-                        Unit = rootUnit
-                    });
-                }
+                RootsNetwork.INSTANCE.Connect(PID, _aimDirection);
             }
         }
     }

@@ -13,6 +13,7 @@ namespace Fungi
         private Rigidbody2D _rb;
         private Collider2D _coll;
         private Vector2 _direction = Vector2.up;
+        private float _gravityScale;
 
         private string PID;
 
@@ -21,13 +22,14 @@ namespace Fungi
         {
             _rb = GetComponent<Rigidbody2D>();
             _coll = GetComponent<Collider2D>();
+            _gravityScale = _rb.gravityScale;
 
             PID = GetComponent<FungiRootsMovement>().PID;
         }
 
         public void OnJump(InputAction.CallbackContext context)
         {
-            if (context.action.triggered && CanJump())
+            if (context.action.triggered && GameManager.INSTANCE.Players[PID].CanJump)
             {
                 _rb.velocity = new Vector2(_rb.velocity.x, 17f);
             }
@@ -43,19 +45,33 @@ namespace Fungi
         // Update is called once per frame
         private void Update()
         {
+            UpdateGroundState();
+
             // Update rotation
             var eulerAngles = RotationManager.INSTANCE.Rotation.eulerAngles;
             transform.eulerAngles = new Vector3(eulerAngles.x, eulerAngles.y, 0);
 
-            _rb.velocity = new Vector2(_direction.x * 7f, _rb.velocity.y);
+            if (GameManager.INSTANCE.GetFungi(PID).State == FungiState.Rooting)
+            {
+                _rb.velocity = Vector2.zero;
+                _rb.gravityScale = 0;
+            }
+            else
+            {
+                _rb.velocity = new Vector2(_direction.x * 7f, _rb.velocity.y);
+                _rb.gravityScale = _gravityScale;
+            }
         }
 
-        private bool CanJump()
+        private void UpdateGroundState()
         {
-            if (GameManager.INSTANCE.GetFungi(PID).State == FungiState.Rooting) return false;
-
             var bounds = _coll.bounds;
-            return Physics2D.BoxCast(bounds.center, bounds.size, 0f, Vector2.down, .1f, jumpableGround);
+            var isOnGround = Physics2D.BoxCast(bounds.center, bounds.size, 0f, Vector2.down, .1f, jumpableGround);
+
+            GameManager.INSTANCE.Players[PID] = GameManager.INSTANCE.Players[PID] with
+            {
+                IsOnGround = isOnGround
+            };
         }
     }
 }

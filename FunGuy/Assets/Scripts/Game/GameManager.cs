@@ -8,7 +8,7 @@ namespace Game
 {
     public class GameManager : IEventReceiver<StartRootingEvent>, IEventReceiver<StopRootingEvent>, IGameSingleton
     {
-        private readonly Dictionary<string, FungiData> _players = new();
+        public readonly Dictionary<string, FungiData> Players = new();
 
         private GameManager()
         {
@@ -20,8 +20,8 @@ namespace Game
         public void Init()
         {
             // TODO: Constants!
-            _players.Add("0", new FungiData(FungiState.Walking, null));
-            _players.Add("1", new FungiData(FungiState.Walking, null));
+            Players.Add("0", new FungiData(FungiState.Walking, false, false));
+            Players.Add("1", new FungiData(FungiState.Walking, false, false));
 
             EventBus<StartRootingEvent>.Register(this);
             EventBus<StopRootingEvent>.Register(this);
@@ -36,12 +36,12 @@ namespace Game
         /**
          * TODO: docs 
          */
-        public FungiData GetFungi(string pid) => _players[pid];
+        public FungiData GetFungi(string pid) => Players[pid];
 
         public void OnEvent(StartRootingEvent e)
         {
             var pid = e.PID;
-            _players[pid] = _players[pid] with
+            Players[pid] = Players[pid] with
             {
                 State = FungiState.Rooting,
             };
@@ -49,8 +49,8 @@ namespace Game
 
         public void OnEvent(StopRootingEvent e)
         {
-            var fungi = _players[e.PID];
-            _players[e.PID] = fungi with { State = FungiState.Walking };
+            var fungi = Players[e.PID];
+            Players[e.PID] = fungi with { State = FungiState.Walking };
         }
     }
 }

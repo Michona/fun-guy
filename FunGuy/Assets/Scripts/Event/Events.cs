@@ -19,4 +19,10 @@ namespace Event
         public string PID;
         public RootUnit Unit;
     }
+
+    public struct DestroyRootEvent : IEvent
+    {
+        public string PID;
+        public int GroupID;
+    }
 }

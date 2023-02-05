@@ -11,14 +11,19 @@ using Joint = Roots.Data.Joint;
 
 namespace Roots
 {
-// TODO: Rename!
-    public class RootsNetwork: IEventReceiver<StartRootingEvent>, IEventReceiver<StopRootingEvent>, IGameSingleton
+    public class RootsNetwork : IEventReceiver<StartRootingEvent>, IGameSingleton
     {
         /**
          * The current joint that is ready to spread!
          */
         [ItemCanBeNull] private readonly Dictionary<string, Joint> _pivot = new();
 
+        /* the turn-rate in degrees*/
+        private const float TurnRate = 60f;
+
+        /* how further away does the root spawn. */
+        private const float DistanceMultiplier = 0.7f;
+            
         private RootsNetwork()
         {
         }
@@ -31,7 +36,7 @@ namespace Roots
         {
             _pivot.Add("0", null);
             _pivot.Add("1", null);
-            
+
             EventBus<StartRootingEvent>.Register(this);
         }
 
@@ -43,44 +48,70 @@ namespace Roots
         /**
          * 
          */
-        [CanBeNull]
-        public RootUnit Connect(string pid, Vector2 direction)
+        public void Connect(string pid, Vector2 direction)
         {
             var pivot = _pivot[pid];
             if (pivot == null || GameManager.INSTANCE.GetFungi(pid).State != FungiState.Rooting)
             {
-                Debug.Log("CANNOT CONNECT");
                 /* We cannot connect here! */
-                return null;
+                return;
             }
 
-            var id = pivot.ID + 1;
-            var position = pivot.Position + (direction * 0.7f);
-            var rot = Vector3.Angle(Vector3.up, position - pivot.Position);
-
-            var isToRight = position.x >= pivot.Position.x;
-            var signedRot = rot;
-            if (isToRight) signedRot = -rot;
+            var updatedDirection = GetUpdatedDirection(pivot.Direction, direction);
+            var position = pivot.Position + (updatedDirection * DistanceMultiplier);
+            var angle = GetRotationAngle( pivot.Position, position);
 
             var unit = new RootUnit(
                 Vector3.Lerp(position, pivot.Position, 0.5f),
-                Quaternion.Euler(0, 0, signedRot),
-                pid
+                Quaternion.Euler(0, 0, angle),
+                pid,
+                pivot.ID
             );
 
             /* update pivot */
-            _pivot[pid] = new Joint(position, id);
+            _pivot[pid] = new Joint(position, pivot.ID, updatedDirection);
 
-            return unit;
+            /* we can spawn now. */
+            EventBus<SpawnRootEvent>.Raise(new SpawnRootEvent
+            {
+                PID = pid,
+                Unit = unit
+            });
+        }
+        private static Vector2 DegreeToVector2(Vector2 from, float degree) => (Vector2)(Quaternion.Euler(0,0,degree) * from);
+        
+        private static float GetRotationAngle(Vector2 initialPosition, Vector2 targetPosition)
+        {
+            var rot = Vector3.Angle(Vector2.up, targetPosition - initialPosition);
+            var isToRight = targetPosition.x >= initialPosition.x;
+            var signedRot = rot;
+            if (isToRight) signedRot = -rot;
+            return signedRot;
+        }
+
+        private static Vector2 GetUpdatedDirection(Vector2 pivotDirection, Vector2 direction)
+        {
+            /* change in degrees between the 2 directions. */
+            var change = Vector3.Angle(pivotDirection, direction);
+
+            var updatedDirection = direction;
+            if (change >= TurnRate)
+            {
+                var upper = DegreeToVector2(pivotDirection, TurnRate);
+                var lower = DegreeToVector2(pivotDirection, -TurnRate);
+
+                /* we use either upper or lower boundary which are exactly turn-rate distance from pivotDirection. */
+                updatedDirection = Vector3.Angle(direction, upper) >= Vector3.Angle(direction, lower) ? lower : upper;
+            }
+
+            return updatedDirection;
         }
 
         public void OnEvent(StartRootingEvent e)
         {
-            _pivot[e.PID] = new Joint(e.Position, 0);
+            var pivot = _pivot[e.PID];
+            var originID = pivot?.ID ?? 0;
+            _pivot[e.PID] = new Joint(e.Position, originID + 1, Vector2.up);
         }
-
-        public void OnEvent(StopRootingEvent e)
-        {
-            _pivot[e.PID] = null;
-        }
-    }}
+    }
+}
