@@ -56,7 +56,9 @@ namespace Game
         public void OnEvent(TakeDamageEvent e)
         {
             var fungi = Players[e.PID];
-            if (DateTime.Now.Second - fungi.LastDamageTimeStamp >= GlobalConst.InvulnerabilityTime)
+            var timeNow = DateTime.Now.Second;
+
+            if (timeNow - fungi.LastDamageTimeStamp >= GlobalConst.InvulnerabilityTime)
             {
                 if (fungi.Health <= 1)
                 {
@@ -68,8 +70,13 @@ namespace Game
                     Players[e.PID] = fungi with
                     {
                         Health = fungi.Health - 1,
-                        LastDamageTimeStamp = DateTime.Now.Second
+                        LastDamageTimeStamp = timeNow
                     };
+
+                    EventBus<HealthLostEvent>.Raise(new HealthLostEvent
+                    {
+                        PID = e.PID
+                    });
                 }
             }
         }

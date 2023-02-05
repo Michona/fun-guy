@@ -123,6 +123,52 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &34149260
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 34149262}
+  - component: {fileID: 34149261}
+  m_Layer: 0
+  m_Name: FungiTwoHP
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &34149261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 34149260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4905b93f13a24c94a32475bd0178d8db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PID: 1
+  _heartObject: {fileID: 6384609125537557177, guid: aa81feca9d5eb44789dc72ef5ee09fc6, type: 3}
+--- !u!4 &34149262
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 34149260}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 6.23, y: -7.49, z: -0.054758076}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &118429088
 GameObject:
   m_ObjectHideFlags: 0
@@ -758,6 +804,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1645612103
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1645612105}
+  - component: {fileID: 1645612104}
+  m_Layer: 0
+  m_Name: FungiOneHP
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1645612104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1645612103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4905b93f13a24c94a32475bd0178d8db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PID: 0
+  _heartObject: {fileID: 6384609125537557177, guid: aa81feca9d5eb44789dc72ef5ee09fc6, type: 3}
+--- !u!4 &1645612105
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1645612103}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -6.38, y: 7.23, z: -0.054758076}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1670622827
 GameObject:
@@ -1804,7 +1896,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7067831069980652382, guid: d5a245cf9282a4815902a9738a9aab7f, type: 3}
       propertyPath: m_DefaultControlScheme
-      value: Keyboard
+      value: GamepadOne
       objectReference: {fileID: 0}
     - target: {fileID: 7067831069980652382, guid: d5a245cf9282a4815902a9738a9aab7f, type: 3}
       propertyPath: m_NeverAutoSwitchControlSchemes
@@ -2012,11 +2104,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7067831069980652382, guid: d5a245cf9282a4815902a9738a9aab7f, type: 3}
       propertyPath: m_DefaultControlScheme
-      value: Mouse
+      value: Keyboard
       objectReference: {fileID: 0}
     - target: {fileID: 7067831069980652382, guid: d5a245cf9282a4815902a9738a9aab7f, type: 3}
       propertyPath: m_NeverAutoSwitchControlSchemes
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7067831069980652384, guid: d5a245cf9282a4815902a9738a9aab7f, type: 3}
       propertyPath: m_RootOrder

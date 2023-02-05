@@ -31,6 +31,11 @@ namespace Event
         public string PID;
     }
 
+    public struct HealthLostEvent : IEvent
+    {
+        public string PID;
+    }
+
     public struct GameOver : IEvent
     {
     }
