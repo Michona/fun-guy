@@ -3,6 +3,7 @@ using Game;
 using Roots;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Util;
 
 namespace Fungi
 {
@@ -16,7 +17,7 @@ namespace Fungi
         // Start is called before the first frame update
         private void Start()
         {
-            InvokeRepeating(nameof(CheckDirection), 0f, 0.2f);
+            InvokeRepeating(nameof(CheckDirection), 0f, GlobalConst.RootSpawnInterval);
         }
 
         public void onAim(InputAction.CallbackContext context)

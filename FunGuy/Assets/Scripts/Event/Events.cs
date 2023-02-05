@@ -25,4 +25,9 @@ namespace Event
         public string PID;
         public int GroupID;
     }
+
+    public struct TakeDamageEvent : IEvent
+    {
+        public string PID;
+    }
 }

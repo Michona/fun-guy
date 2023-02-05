@@ -2,6 +2,7 @@ using System;
 using Event;
 using Injection;
 using UnityEngine;
+using Util;
 
 namespace Rotation
 {
@@ -40,11 +41,11 @@ namespace Rotation
             CurrentRotation.z += RotationDeltaDeg;
             EventBus<StopRootingEvent>.Raise(new StopRootingEvent
             {
-                PID = "0",
+                PID = GlobalConst.PlayerOne,
             });
             EventBus<StopRootingEvent>.Raise(new StopRootingEvent
             {
-                PID = "1",
+                PID = GlobalConst.PlayerTwo,
             });
         }
 

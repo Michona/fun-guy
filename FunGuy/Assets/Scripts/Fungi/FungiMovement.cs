@@ -37,7 +37,7 @@ namespace Fungi
 
         public void OnMove(InputAction.CallbackContext context)
         {
-            _direction = GameManager.INSTANCE.GetFungi(PID).State == FungiState.Walking
+            _direction = GameManager.INSTANCE.Players[PID].State == FungiState.Walking
                 ? context.ReadValue<Vector2>()
                 : Vector2.zero;
         }
@@ -51,7 +51,7 @@ namespace Fungi
             var eulerAngles = RotationManager.INSTANCE.Rotation.eulerAngles;
             transform.eulerAngles = new Vector3(eulerAngles.x, eulerAngles.y, 0);
 
-            if (GameManager.INSTANCE.GetFungi(PID).State == FungiState.Rooting)
+            if (GameManager.INSTANCE.Players[PID].State == FungiState.Rooting)
             {
                 _rb.velocity = Vector2.zero;
                 _rb.gravityScale = 0;

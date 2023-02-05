@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using Event;
 using Game.Data;
 using Injection;
+using Util;
 
 namespace Game
 {
-    public class GameManager : IEventReceiver<StartRootingEvent>, IEventReceiver<StopRootingEvent>, IGameSingleton
+    public class GameManager : IEventReceiver<StartRootingEvent>, IEventReceiver<StopRootingEvent>,
+        IEventReceiver<TakeDamageEvent>, IGameSingleton
     {
         public readonly Dictionary<string, FungiData> Players = new();
 
@@ -19,24 +21,20 @@ namespace Game
 
         public void Init()
         {
-            // TODO: Constants!
-            Players.Add("0", new FungiData(FungiState.Walking, false, false));
-            Players.Add("1", new FungiData(FungiState.Walking, false, false));
+            Players.Add(GlobalConst.PlayerOne, new FungiData());
+            Players.Add(GlobalConst.PlayerTwo, new FungiData());
 
             EventBus<StartRootingEvent>.Register(this);
             EventBus<StopRootingEvent>.Register(this);
+            EventBus<TakeDamageEvent>.Register(this);
         }
 
         public void Destroy()
         {
             EventBus<StartRootingEvent>.UnRegister(this);
             EventBus<StopRootingEvent>.UnRegister(this);
+            EventBus<TakeDamageEvent>.UnRegister(this);
         }
-
-        /**
-         * TODO: docs 
-         */
-        public FungiData GetFungi(string pid) => Players[pid];
 
         public void OnEvent(StartRootingEvent e)
         {
@@ -51,6 +49,19 @@ namespace Game
         {
             var fungi = Players[e.PID];
             Players[e.PID] = fungi with { State = FungiState.Walking };
+        }
+
+        public void OnEvent(TakeDamageEvent e)
+        {
+            var fungi = Players[e.PID];
+            if (DateTime.Now.Second - fungi.LastDamageTimeStamp >= GlobalConst.InvulnerabilityTime)
+            {
+                Players[e.PID] = fungi with
+                {
+                    Health = fungi.Health - 1,
+                    LastDamageTimeStamp = DateTime.Now.Second
+                };
+            }
         }
     }
 }

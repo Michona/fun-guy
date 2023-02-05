@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Wall
   - Destroy
+  - Root
   layers:
   - Default
   - TransparentFX

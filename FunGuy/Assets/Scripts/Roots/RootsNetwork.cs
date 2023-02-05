@@ -7,6 +7,7 @@ using Injection;
 using JetBrains.Annotations;
 using Roots.Data;
 using UnityEngine;
+using Util;
 using Joint = Roots.Data.Joint;
 
 namespace Roots
@@ -18,12 +19,6 @@ namespace Roots
          */
         [ItemCanBeNull] private readonly Dictionary<string, Joint> _pivot = new();
 
-        /* the turn-rate in degrees*/
-        private const float TurnRate = 60f;
-
-        /* how further away does the root spawn. */
-        private const float DistanceMultiplier = 0.7f;
-
         private RootsNetwork()
         {
         }
@@ -34,8 +29,8 @@ namespace Roots
 
         public void Init()
         {
-            _pivot.Add("0", null);
-            _pivot.Add("1", null);
+            _pivot.Add(GlobalConst.PlayerOne, null);
+            _pivot.Add(GlobalConst.PlayerTwo, null);
 
             EventBus<StartRootingEvent>.Register(this);
         }
@@ -45,20 +40,29 @@ namespace Roots
             EventBus<StartRootingEvent>.UnRegister(this);
         }
 
+        public bool IsCloseToHead(RootUnit root, Vector2 position)
+        {
+            var pivot = _pivot[root.PID];
+            if (pivot == null) return false;
+
+            if (root.GroupID != pivot.ID) return false;
+            return (Vector2.Distance(pivot.Position, position) <= GlobalConst.CollisionProximity);
+        }
+
         /**
          * 
          */
         public void Connect(string pid, Vector2 direction)
         {
             var pivot = _pivot[pid];
-            if (pivot == null || GameManager.INSTANCE.GetFungi(pid).State != FungiState.Rooting)
+            if (pivot == null || GameManager.INSTANCE.Players[pid].State != FungiState.Rooting)
             {
                 /* We cannot connect here! */
                 return;
             }
 
             var updatedDirection = GetUpdatedDirection(pivot.Direction, direction);
-            var position = pivot.Position + (updatedDirection * DistanceMultiplier);
+            var position = pivot.Position + (updatedDirection * GlobalConst.RootSpawnDistanceMultiplier);
             var angle = GetRotationAngle(pivot.Position, position);
 
             var unit = new RootUnit(
@@ -98,10 +102,10 @@ namespace Roots
             var change = Vector3.Angle(pivotDirection, direction);
 
             var updatedDirection = direction;
-            if (change >= TurnRate)
+            if (change >= GlobalConst.TurnRateAngle)
             {
-                var upper = DegreeToVector2(pivotDirection, TurnRate);
-                var lower = DegreeToVector2(pivotDirection, -TurnRate);
+                var upper = DegreeToVector2(pivotDirection, GlobalConst.TurnRateAngle);
+                var lower = DegreeToVector2(pivotDirection, -GlobalConst.TurnRateAngle);
 
                 /* we use either upper or lower boundary which are exactly turn-rate distance from pivotDirection. */
                 updatedDirection = Vector3.Angle(direction, upper) >= Vector3.Angle(direction, lower) ? lower : upper;

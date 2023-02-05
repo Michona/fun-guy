@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Event;
 using Unity.VisualScripting;
 using UnityEngine;
+using Util;
 using Random = System.Random;
 
 namespace Roots
@@ -33,10 +34,11 @@ namespace Roots
         {
             var rootUnit = e.Unit;
 
-            var randomRootIndex = (new Random()).Next(0, PlayerOneRoots.Count);
-            var rootToSpawn = e.PID == "0"
-                ? (rootUnit.isBase ? PlayerOneBaseRoot : PlayerOneRoots[randomRootIndex])
-                : (rootUnit.isBase ? PlayerTwoBaseRoot : PlayerOneRoots[randomRootIndex]);
+            var randomRootIndexOne = (new Random()).Next(0, PlayerOneRoots.Count);
+            var randomRootIndexTwo = (new Random()).Next(0, PlayerTwoRoots.Count);
+            var rootToSpawn = e.PID == GlobalConst.PlayerOne
+                ? (rootUnit.isBase ? PlayerOneBaseRoot : PlayerOneRoots[randomRootIndexOne])
+                : (rootUnit.isBase ? PlayerTwoBaseRoot : PlayerTwoRoots[randomRootIndexTwo]);
 
             var rootObject = Instantiate(rootToSpawn, new Vector3(rootUnit.Position.x, rootUnit.Position.y, 0f),
                 rootUnit.Rotation);

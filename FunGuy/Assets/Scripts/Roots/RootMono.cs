@@ -3,6 +3,7 @@ using Fungi;
 using Game;
 using JetBrains.Annotations;
 using Roots.Data;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Roots
@@ -11,22 +12,25 @@ namespace Roots
     {
         [HideInInspector] [CanBeNull] public RootUnit Data = null;
 
+        [SerializeField] private GameObject SpotObject;
+        [CanBeNull] private GameObject _spotInstance;
+
         private void OnTriggerEnter2D(Collider2D col)
         {
             if (Data == null) return;
 
+            /* We hit a Wall. Just stop rooting. */
             if (col.CompareTag("Wall"))
             {
-                Debug.Log("WALL HIT");
                 EventBus<StopRootingEvent>.Raise(new StopRootingEvent
                 {
                     PID = Data.PID
                 });
             }
 
+            /* We hit object that should destroy this Root. */
             if (col.CompareTag("Destroy"))
             {
-                Debug.Log("DESTROY HIT");
                 EventBus<StopRootingEvent>.Raise(new StopRootingEvent
                 {
                     PID = Data.PID
@@ -38,14 +42,54 @@ namespace Roots
                 });
             }
 
+            /* We hit a Fungi player. */
             if (col.CompareTag("Player"))
             {
-                Debug.Log("PLAYER HIT");
+                _spotInstance = Instantiate(SpotObject, transform);
+
                 var fungiPid = col.GetComponent<FungiRootsMovement>().PID;
-                GameManager.INSTANCE.Players[fungiPid] = GameManager.INSTANCE.Players[fungiPid] with
+                var isYourRoot = fungiPid == Data.PID;
+
+                if (isYourRoot)
                 {
-                    IsOnRoot = true
-                };
+                    GameManager.INSTANCE.Players[fungiPid] = GameManager.INSTANCE.Players[fungiPid] with
+                    {
+                        IsOnRoot = true
+                    };
+                }
+                else
+                {
+                    /* hit enemy root */
+                    EventBus<TakeDamageEvent>.Raise(new TakeDamageEvent
+                    {
+                        PID = Data.PID
+                    });
+                }
+            }
+
+            /* We hit another Root. */
+            if (col.CompareTag("Root"))
+            {
+                var otherPid = col.GetComponent<RootMono>().Data?.PID;
+                var position = transform.position;
+                if (otherPid != null && otherPid != Data.PID)
+                {
+                    /* check if close enough to delete */
+                    var isHead = RootsNetwork.INSTANCE.IsCloseToHead(Data,
+                        new Vector2(position.x, position.y));
+                    if (isHead)
+                    {
+                        EventBus<StopRootingEvent>.Raise(new StopRootingEvent
+                        {
+                            PID = Data.PID
+                        });
+                        EventBus<DestroyRootEvent>.Raise(new DestroyRootEvent
+                        {
+                            PID = Data.PID,
+                            GroupID = Data.GroupID
+                        });
+                    }
+                }
             }
         }
 
@@ -53,12 +97,13 @@ namespace Roots
         {
             if (col.CompareTag("Player"))
             {
-                Debug.Log("PLAYER Exited");
                 var fungiPid = col.GetComponent<FungiRootsMovement>().PID;
                 GameManager.INSTANCE.Players[fungiPid] = GameManager.INSTANCE.Players[fungiPid] with
                 {
                     IsOnRoot = false
                 };
+
+                if (_spotInstance != null && !_spotInstance.IsDestroyed()) Destroy(_spotInstance);
             }
         }
     }
